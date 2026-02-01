@@ -26,14 +26,16 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-600 p-6">
-     {/* Fixed Header - matching other pages */}
+ {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 bg-white z-10 py-4 shadow-sm border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <h1 className="text-2xl font-bold text-gray-900">Map View</h1>
           <p className="text-sm text-gray-500">Browse listings by location</p>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto">
+
+      {/* Content - Constrained height */}
+      <div className="max-w-4xl mx-auto px-6 pt-24 pb-8">
         <ListingsMap />
       </div>
     </div>

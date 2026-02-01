@@ -41,10 +41,8 @@ export const ListingsMap: React.FC = () => {
   const [geocoding, setGeocoding] = useState(false);
   const [selected, setSelected] = useState<ListingRow | null>(null);
 
-  // Default center: Albany (Capital Region)
   const defaultCenter = useMemo(() => ({ lat: 42.6526, lng: -73.7562 }), []);
 
-  // Fetch listings from DB
   useEffect(() => {
     const fetchListings = async () => {
       setLoading(true);
@@ -68,15 +66,12 @@ export const ListingsMap: React.FC = () => {
     fetchListings();
   }, []);
 
-  // Only pin listings that have coordinates
   const withCoords = rows.filter((r) => r.latitude != null && r.longitude != null);
 
-  // Center map on first coordinate if available, else default
   const center = withCoords.length
     ? { lat: withCoords[0].latitude as number, lng: withCoords[0].longitude as number }
     : defaultCenter;
 
-  // Geocode + store missing coordinates
   const geocodeMissingPins = async () => {
     if (!window.google?.maps) {
       console.error("Google Maps JS API not loaded yet.");
@@ -96,12 +91,11 @@ export const ListingsMap: React.FC = () => {
 
       const result = await new Promise<google.maps.GeocoderResult | null>((resolve) => {
         geocoder.geocode({ address }, (results, status) => {
-  console.log("GEOCODE STATUS:", status, "| ADDRESS:", address, "| RESULTS:", results?.length);
+          console.log("GEOCODE STATUS:", status, "| ADDRESS:", address, "| RESULTS:", results?.length);
 
-  if (status === "OK" && results && results[0]) resolve(results[0]);
-  else resolve(null);
-});
-
+          if (status === "OK" && results && results[0]) resolve(results[0]);
+          else resolve(null);
+        });
       });
 
       if (!result) {
@@ -113,7 +107,6 @@ export const ListingsMap: React.FC = () => {
       const lat = loc.lat();
       const lng = loc.lng();
 
-      // Save to Supabase base table
       const { error: updErr } = await supabase
         .from("listings")
         .update({ latitude: lat, longitude: lng })
@@ -121,12 +114,10 @@ export const ListingsMap: React.FC = () => {
 
       if (updErr) console.error("Update coords failed:", l.id, updErr);
 
-      // Update local state immediately so pins appear without refresh
       setRows((prev) =>
         prev.map((x) => (x.id === l.id ? { ...x, latitude: lat, longitude: lng } : x))
       );
 
-      // rate-limit so you don’t spam geocoding
       await sleep(200);
     }
 
@@ -134,26 +125,35 @@ export const ListingsMap: React.FC = () => {
   };
 
   if (!apiKey) {
-    return <div className="p-6 text-white">Missing VITE_GOOGLE_MAPS_API_KEY</div>;
+    return <div className="p-6 text-gray-600">Missing VITE_GOOGLE_MAPS_API_KEY</div>;
   }
 
-  if (loading) return <div className="p-6 text-white">Loading…</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading map...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-white text-xl font-bold">Listings Map</h2>
+      <div className="flex items-center justify-between mb-4">
+        {/* <h2 className="text-lg font-bold text-gray-900">Explore Listings</h2> */}
 
         <button
           onClick={geocodeMissingPins}
           disabled={geocoding}
-          className="bg-white/20 text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/30 disabled:opacity-50"
+          className="bg-gradient-to-br from-black to-black text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition"
         >
-          {geocoding ? "Geocoding..." : "Add Pins (Geocode)"}
+          {geocoding ? "Geocoding..." : "Add Pins"}
         </button>
       </div>
 
-      <div className="w-full h-[70vh] rounded-3xl overflow-hidden shadow-2xl border border-white/20">
+      <div className="w-full h-[600px] rounded-2xl overflow-hidden shadow-md border border-gray-200">
         <APIProvider apiKey={apiKey}>
           <Map defaultCenter={center} defaultZoom={12}>
             {withCoords.map((l) => (
@@ -191,10 +191,6 @@ export const ListingsMap: React.FC = () => {
           </Map>
         </APIProvider>
       </div>
-
-      <p className="text-white/80 text-sm mt-3">
-        Click <b>Add Pins (Geocode)</b> once. It converts addresses → coordinates and stores them in Supabase.
-      </p>
     </div>
   );
 };

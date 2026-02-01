@@ -34,7 +34,7 @@ export const ChatPage = () => {
         {...props}
         onSelect={() => {
           setActiveChannel(props.channel);
-          setShowChannelList(false); // Hide list on mobile
+          setShowChannelList(false);
         }}
       />
     );
@@ -159,11 +159,10 @@ export const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-white overflow-hidden flex flex-col">
+    <div className="h-screen bg-white overflow-hidden flex flex-col pb-20">
       {/* Fixed Header */}
       <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
         <div className="max-w-6xl mx-auto px-6 flex items-center gap-4">
-          {/* Back button - only show on mobile when chat is open */}
           {activeChannel && !showChannelList && (
             <button
               onClick={() => setShowChannelList(true)}
@@ -183,7 +182,7 @@ export const ChatPage = () => {
       <div className="flex-1 max-w-6xl w-full mx-auto overflow-hidden">
         <Chat client={chatClient} theme="messaging light">
           <div className="flex h-full">
-            {/* Sidebar - Show/hide on mobile */}
+            {/* Sidebar */}
             <div
               className={`${
                 showChannelList ? 'block' : 'hidden'
@@ -197,18 +196,22 @@ export const ChatPage = () => {
               />
             </div>
 
-            {/* Main Chat Area - Show/hide on mobile */}
+            {/* Main Chat Area */}
             <div
               className={`${
                 !showChannelList ? 'block' : 'hidden'
-              } md:block flex-1 bg-white h-full`}
+              } md:block flex-1 bg-white h-full flex flex-col`}
             >
               {activeChannel ? (
                 <Channel channel={activeChannel}>
                   <Window>
                     <ChannelHeader />
-                    <MessageList />
-                    <MessageInput focus />
+                    <div className="flex-1 overflow-y-auto">
+                      <MessageList />
+                    </div>
+                    <div className="shrink-0">
+                      <MessageInput />
+                    </div>
                   </Window>
                   <Thread />
                 </Channel>

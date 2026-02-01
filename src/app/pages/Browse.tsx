@@ -307,7 +307,11 @@ export const BrowsePage: React.FC = () => {
               {/* Category Tag */}
               {currentHome.housing_category && (
                 <span className="inline-flex px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">
-                  {currentHome.housing_category}
+                  {currentHome.housing_category === "student" ? "Student Housing" : 
+                  currentHome.housing_category === "affordable" ? "Affordable" :
+                     currentHome.housing_category === "accessible" ? "Accessible" :
+                    currentHome.housing_category === "shelter" ? "Shelter" :
+                               "Housing"}
                 </span>
               )}
             </div>
