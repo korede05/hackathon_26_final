@@ -215,9 +215,9 @@ export const BrowsePage: React.FC = () => {
   const currentHome = listings[currentIndex];
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden flex flex-col">
       {/* Fixed Header */}
-      <div className="absolute top-0 left-0 right-0 bg-white z-10 py-4 shadow-sm border-b border-gray-100">
+      <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
         <div className="flex items-center justify-center">
           <div className="bg-gradient-to-br from-blue-600 to-purple-500 rounded-full p-2">
             <Home className="w-6 h-6 text-white" />
@@ -232,18 +232,18 @@ export const BrowsePage: React.FC = () => {
         </div>
       )}
 
-      {/* Content - Flexbox fills screen */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pt-16 pb-28">
-        {/* Property Card - Responsive sizing */}
+      {/* Main Content Area - Flexbox */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
+        {/* Property Card */}
         <div 
-          className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-sm transition-all duration-300 ${
+          className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-md transition-all duration-300 flex flex-col ${
             swipeDirection === 'left' 
               ? 'opacity-0 -translate-x-full' 
               : swipeDirection === 'right'
               ? 'opacity-0 translate-x-full'
               : 'opacity-100 translate-x-0'
           }`}
-          style={{ maxHeight: 'calc(100vh - 240px)' }}
+          style={{ maxHeight: '75vh' }}
         >
           {/* Swipe indicator overlays */}
           {swipeDirection === 'left' && (
@@ -262,8 +262,8 @@ export const BrowsePage: React.FC = () => {
             </div>
           )}
 
-          {/* Image - Responsive height */}
-          <div className="relative" style={{ height: 'min(50vh, 400px)' }}>
+          {/* Image - Takes up 60% of card */}
+          <div className="relative flex-shrink-0" style={{ height: '45vh', maxHeight: '400px' }}>
             <img 
               src={currentHome.cover_photo_url || "https://images.unsplash.com/photo-1518780664697-55e3ad937233"} 
               alt={currentHome.title}
@@ -271,8 +271,8 @@ export const BrowsePage: React.FC = () => {
             />
           </div>
 
-          {/* Info Section - Scrollable if needed */}
-          <div className="p-5 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 120px)' }}>
+          {/* Info Section - Takes remaining space */}
+          <div className="p-5 flex-1 overflow-y-auto">
             {/* Price */}
             <h1 className="text-3xl font-bold text-gray-900 mb-1">
               ${currentHome.price_max.toLocaleString()}
@@ -315,9 +315,8 @@ export const BrowsePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Action Buttons - Fixed at bottom */}
-        <div className="flex items-center justify-center gap-6 mt-6">
-          {/* Pass button */}
+        {/* Action Buttons */}
+        <div className="flex items-center justify-center gap-6 mt-6 shrink-0">
           <button 
             onClick={() => handleAction("dislike")}
             disabled={swipeDirection !== null || showingDislikes}
@@ -326,7 +325,6 @@ export const BrowsePage: React.FC = () => {
             <X className="w-8 h-8 text-red-500" strokeWidth={3} />
           </button>
           
-          {/* Info button */}
           <button 
             onClick={() => navigate(`/listing/${currentHome.id}`)}
             className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
@@ -334,7 +332,6 @@ export const BrowsePage: React.FC = () => {
             <Info className="w-6 h-6 text-gray-400" />
           </button>
 
-          {/* Like button */}
           <button 
             onClick={() => handleAction("like")}
             disabled={swipeDirection !== null}
