@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Chat,
@@ -15,6 +15,7 @@ import {
 import { StreamChat } from "stream-chat";
 import "stream-chat-react/dist/css/v2/index.css";
 import { supabase } from "../../../supabaseClient";
+import { ChevronLeft } from "lucide-react";
 
 const streamKey = import.meta.env.VITE_STREAM_API_KEY as string;
 const chatClient = StreamChat.getInstance(streamKey);
@@ -22,14 +23,19 @@ const chatClient = StreamChat.getInstance(streamKey);
 export const ChatPage = () => {
   const [ready, setReady] = useState(false);
   const [activeChannel, setActiveChannel] = useState<any>(null);
+  const [showChannelList, setShowChannelList] = useState(true);
   const [params] = useSearchParams();
+  const navigate = useNavigate();
   const dmUserId = params.get("dm");
 
   const CustomChannelPreview = (props: ChannelPreviewUIComponentProps) => {
     return (
       <ChannelPreviewMessenger
         {...props}
-        onSelect={() => setActiveChannel(props.channel)}
+        onSelect={() => {
+          setActiveChannel(props.channel);
+          setShowChannelList(false); // Hide list on mobile
+        }}
       />
     );
   };
@@ -40,7 +46,6 @@ export const ChatPage = () => {
       if (!user) return;
 
       try {
-        // Fetch current user's profile
         const { data: myProfile } = await supabase
           .from("profiles")
           .select("full_name, avatar_url")
@@ -88,29 +93,25 @@ export const ChatPage = () => {
       if (!myId || myId === dmUserId) return;
 
       try {
-        // Create deterministic channel ID
         const channelId = `dm_${[myId, dmUserId].sort().join("_")}`.substring(0, 64);
 
-        // Check if channel already exists
         const existingChannels = await chatClient.queryChannels({
           type: "messaging",
           id: channelId,
         });
 
         if (existingChannels.length > 0) {
-          // Channel exists, just set it as active (they've chatted before)
           setActiveChannel(existingChannels[0]);
+          setShowChannelList(false);
           return;
         }
 
-        // Channel doesn't exist - this is a new conversation
         const { data: profile } = await supabase
           .from("profiles")
           .select("full_name, avatar_url")
           .eq("id", dmUserId)
           .single();
 
-        // Ensure the other user exists in Stream
         await fetch("/.netlify/functions/ensure-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -123,11 +124,11 @@ export const ChatPage = () => {
 
         const channel = chatClient.channel("messaging", channelId, {
           members: [myId, dmUserId],
-          name: profile?.full_name || "Direct Message",
         } as any);
 
         await channel.watch();
         setActiveChannel(channel);
+        setShowChannelList(false);
       } catch (err) {
         console.error("Failed to initialize DM:", err);
       }
@@ -158,24 +159,36 @@ export const ChatPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-24">
-      {/* Fixed Header - matching other pages */}
-      <div className="fixed top-0 left-0 right-0 bg-white z-10 py-4 shadow-sm border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6">
-          <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-          <p className="text-sm text-gray-500">Chat with potential roommates</p>
+    <div className="h-screen bg-white overflow-hidden flex flex-col">
+      {/* Fixed Header */}
+      <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
+        <div className="max-w-6xl mx-auto px-6 flex items-center gap-4">
+          {/* Back button - only show on mobile when chat is open */}
+          {activeChannel && !showChannelList && (
+            <button
+              onClick={() => setShowChannelList(true)}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition"
+            >
+              <ChevronLeft size={24} className="text-gray-900" />
+            </button>
+          )}
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
+            <p className="text-sm text-gray-500 hidden md:block">Chat with potential roommates</p>
+          </div>
         </div>
       </div>
 
       {/* Chat Container */}
-      <div className="max-w-6xl mx-auto pt-24 h-screen">
+      <div className="flex-1 max-w-6xl w-full mx-auto overflow-hidden">
         <Chat client={chatClient} theme="messaging light">
-          <div className="flex h-[calc(100vh-96px-96px)] shadow-md border border-gray-100 rounded-2xl overflow-hidden bg-white">
-            {/* Sidebar - Responsive */}
-            <div className="w-full md:w-80 border-r border-gray-100 h-full overflow-y-auto bg-white">
-              <div className="p-4 border-b border-gray-100 md:hidden">
-                <h2 className="text-lg font-bold text-gray-900">Conversations</h2>
-              </div>
+          <div className="flex h-full">
+            {/* Sidebar - Show/hide on mobile */}
+            <div
+              className={`${
+                showChannelList ? 'block' : 'hidden'
+              } md:block w-full md:w-80 border-r border-gray-100 h-full overflow-y-auto bg-white`}
+            >
               <ChannelList
                 filters={filters}
                 sort={sort}
@@ -184,15 +197,17 @@ export const ChatPage = () => {
               />
             </div>
 
-            {/* Main Chat Area - Hidden on mobile when no channel selected */}
-            <div className={`flex-1 bg-white h-full flex-col ${activeChannel ? 'flex' : 'hidden md:flex'}`}>
+            {/* Main Chat Area - Show/hide on mobile */}
+            <div
+              className={`${
+                !showChannelList ? 'block' : 'hidden'
+              } md:block flex-1 bg-white h-full`}
+            >
               {activeChannel ? (
                 <Channel channel={activeChannel}>
                   <Window>
                     <ChannelHeader />
-                    <div className="flex-1 overflow-y-auto">
-                      <MessageList />
-                    </div>
+                    <MessageList />
                     <MessageInput focus />
                   </Window>
                   <Thread />
