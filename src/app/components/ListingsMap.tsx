@@ -5,7 +5,7 @@ import { supabase } from "../../../supabaseClient";
 type ListingRow = {
   id: string;
   title: string;
-  price: number | null;
+  price_max: number | null;
 
   address_line1: string | null;
   address_line2: string | null;
@@ -50,7 +50,7 @@ export const ListingsMap: React.FC = () => {
       const { data, error } = await supabase
         .from("listings_feed")
         .select(
-          "id,title,price,address_line1,address_line2,city,state,postal_code,country,latitude,longitude,cover_photo_url,housing_category"
+          "id,title,price_max,address_line1,address_line2,city,state,postal_code,country,latitude,longitude,cover_photo_url,housing_category"
         )
         .order("created_at", { ascending: false });
 
@@ -175,9 +175,9 @@ export const ListingsMap: React.FC = () => {
                   <div style={{ fontSize: 12, marginTop: 4 }}>
                     {selected.city}, {selected.state}
                   </div>
-                  {selected.price != null && (
+                  {selected.price_max != null && (
                     <div style={{ fontWeight: 800, marginTop: 6 }}>
-                      ${selected.price}/mo
+                      ${selected.price_max.toLocaleString()}/mo
                     </div>
                   )}
                   {selected.housing_category && (
