@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-
 interface Profile {
   id: string;
   full_name: string;
@@ -34,9 +33,7 @@ export const ViewProfilePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
-    const [myProfile, setMyProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [potentialMatches, setPotentialMatches] = useState<Profile[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -59,27 +56,19 @@ export const ViewProfilePage: React.FC = () => {
       }
     };
 
-    const getAiMatch = async (person: Profile) => {
-    if (!myProfile) {
-      toast.error("Complete your profile first!");
-      return;
-    }
-
     if (id) fetchProfile();
-
-    
   }, [id, navigate]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-  //         <p className="font-bold text-white text-xl">Loading profile...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
+          <p className="font-bold text-white text-xl">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!profile) return null;
 
@@ -190,8 +179,9 @@ export const ViewProfilePage: React.FC = () => {
 
         {/* Message Button */}
         <button 
-          onClick={() => navigate(`/chat?dm=${person.id}`)}
-          className="w-full bg-black text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-800 transition-all shadow-md">
+          onClick={() => navigate(`/chat?dm=${profile.id}`)}
+          className="w-full bg-black text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-800 transition-all shadow-md"
+        >
           <Mail size={20} />
           Message {profile.full_name.split(' ')[0]}
         </button>

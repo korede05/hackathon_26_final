@@ -112,7 +112,7 @@ export const SignupPage: React.FC = () => {
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mt-6 flex items-start gap-3">
                     <Shield className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
                     <p className="text-sm text-white">
-                        Your safety is our priority. All listings verified via university credentials.
+                        Your safety is our priority. All listings verified via community credentials.
                     </p>
                 </div>
             </div>
