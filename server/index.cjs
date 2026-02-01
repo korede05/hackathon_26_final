@@ -72,7 +72,7 @@ app.post("/ensure-user", async (req, res) => {
 
 // 2. DYNAMIC PORT BINDING
 // Railway injects the PORT variable. We listen on 0.0.0.0 to accept external traffic.
-const PORT = process.env.PORT || 8080; 
+const PORT = process.env.PORT || 3001; 
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Stream token server running on port ${PORT}`);

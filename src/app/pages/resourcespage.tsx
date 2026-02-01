@@ -172,7 +172,7 @@ export const ResourcesPage = () => {
         </div>
       </div>
 
-      {/* Floating Action Button (FAB) - Gradient */}
+      {/* Floating Action Button (FAB) - Gradient
       <button
         onClick={scrollToForm}
         style={{
@@ -182,7 +182,7 @@ export const ResourcesPage = () => {
       >
         <Plus size={20} />
         <span className="font-semibold">Post Event</span>
-      </button>
+      </button> */}
     </div>
   );
 };

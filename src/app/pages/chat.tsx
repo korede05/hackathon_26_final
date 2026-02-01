@@ -45,8 +45,8 @@ export const ChatPage = () => {
       if (!user) return;
 
       try {
-        // Fetch token from your server on port 3001
-        const resp = await fetch("https://hackathon26final-production.up.railway.app/stream-token", {
+        // UPDATED: Use Netlify Function endpoint
+        const resp = await fetch("/.netlify/functions/stream-token", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -95,8 +95,8 @@ export const ChatPage = () => {
           .eq("id", dmUserId)
           .single();
 
-        // Ensure the DM target user exists in Stream Chat before creating channel
-        await fetch("https://hackathon26final-production.up.railway.app/ensure-user", {
+        // UPDATED: Use Netlify Function endpoint
+        await fetch("/.netlify/functions/ensure-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -144,7 +144,7 @@ export const ChatPage = () => {
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
           <p className="font-bold">Initializing Chat...</p>
           <p className="text-xs mt-2 text-gray-400">
-            Ensure port 3001 is running
+            Connecting to chat server...
           </p>
         </div>
       </div>
@@ -166,12 +166,14 @@ export const ChatPage = () => {
             />
           </div>
 
-          <div className="flex-1 bg-gray-50 h-full">
+          <div className="flex-1 bg-gray-50 h-full flex flex-col">
             {activeChannel ? (
               <Channel channel={activeChannel}>
                 <Window>
                   <ChannelHeader />
-                  <MessageList />
+                  <div className="flex-1 overflow-y-auto">
+                    <MessageList />
+                  </div>
                   <MessageInput focus />
                 </Window>
                 <Thread />

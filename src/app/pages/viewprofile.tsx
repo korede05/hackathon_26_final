@@ -59,16 +59,16 @@ export const ViewProfilePage: React.FC = () => {
     if (id) fetchProfile();
   }, [id, navigate]);
 
-  if (loading) {
-    return (
-      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="font-bold text-white text-xl">Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
+  //         <p className="font-bold text-white text-xl">Loading profile...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!profile) return null;
 

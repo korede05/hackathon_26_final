@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../../supabaseClient";
 import {
@@ -112,7 +113,8 @@ export const MatchesPage: React.FC = () => {
     const category = getCategory(score);
 
     try {
-      await fetch("https://hackathon26final-production.up.railway.app/stream-token", {
+      // UPDATED: Use Netlify Function endpoint instead of Railway
+      await fetch("/.netlify/functions/stream-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -135,17 +137,6 @@ export const MatchesPage: React.FC = () => {
       setCalculatingId(null);
     }
   };
-
-  // if (loading) {
-  //   return (
-  //     <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-  //         <p className="font-bold text-white text-xl">Finding matches...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -173,7 +164,7 @@ export const MatchesPage: React.FC = () => {
               className="bg-white rounded-3xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-all"
             >
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-500 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
+                <div className="w-20 h-20 bg-linear-to-br from-blue-600 to-purple-500 rounded-2xl flex items-center justify-center overflow-hidden shrink-0">
                   {person.avatar_url ? (
                     <img
                       src={person.avatar_url}
@@ -259,7 +250,6 @@ export const MatchesPage: React.FC = () => {
 
               <div className="flex gap-3">
                 <button
-                  // Change this from /profile/${person.id} to /viewprofile/${person.id}
                   onClick={() => navigate(`/viewprofile/${person.id}`)}
                   className="flex-1 bg-black text-white py-3 rounded-xl font-semibold text-sm hover:bg-gray-800 transition"
                 >
