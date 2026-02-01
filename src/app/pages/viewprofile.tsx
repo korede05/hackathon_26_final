@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+
 interface Profile {
   id: string;
   full_name: string;
@@ -33,8 +34,9 @@ export const ViewProfilePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
+    const [myProfile, setMyProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [potentialMatches, setPotentialMatches] = useState<MatchProfile[]>([]);
+  const [potentialMatches, setPotentialMatches] = useState<Profile[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -56,6 +58,12 @@ export const ViewProfilePage: React.FC = () => {
         setLoading(false);
       }
     };
+
+    const getAiMatch = async (person: Profile) => {
+    if (!myProfile) {
+      toast.error("Complete your profile first!");
+      return;
+    }
 
     if (id) fetchProfile();
 

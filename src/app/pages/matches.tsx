@@ -112,7 +112,7 @@ export const MatchesPage: React.FC = () => {
     const category = getCategory(score);
 
     try {
-      await fetch("http://localhost:3001/stream-token", {
+      await fetch("https://hackathon26final-production.up.railway.app/stream-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
