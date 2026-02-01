@@ -70,8 +70,9 @@ app.post("/ensure-user", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`✅ Stream token server running on http://localhost:${PORT}`);
 });
+app.use(cors({ origin: ["https://brilliant-marshmallow-e77688.netlify.app/", "http://localhost:5173"] }));

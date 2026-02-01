@@ -14,7 +14,7 @@ interface Listing {
   bathrooms?: number;
   sqft?: number;
   description?: string;
-  housing_category?: "Student" | "affordable" | "accessible" | "helter";
+  housing_category?: "student" | "affordable" | "accessible" | "shelter";
 }
 
 export const ListingsPage: React.FC = () => {
@@ -169,7 +169,13 @@ export const ListingsPage: React.FC = () => {
                           {/* Category badge - below title */}
                           {listing.housing_category && (
                             <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 mb-3">
-                              {listing.housing_category}
+                              {listing.housing_category === "student" ? "Student " :
+                               listing.housing_category === "affordable" ? "Affordable " :
+                               listing.housing_category === "accessible" ? "Accessible " :
+                               listing.housing_category === "shelter" ? "Shelter" :
+                               "Housing"}
+                              {/* {resource.category === "volunteering" ? "Volunteering" */}
+
                             </span>
                           )}
                         </div>
