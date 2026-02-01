@@ -88,6 +88,22 @@ export const ChatPage = () => {
       if (!myId || myId === dmUserId) return;
 
       try {
+        // Create deterministic channel ID
+        const channelId = `dm_${[myId, dmUserId].sort().join("_")}`.substring(0, 64);
+
+        // Check if channel already exists
+        const existingChannels = await chatClient.queryChannels({
+          type: "messaging",
+          id: channelId,
+        });
+
+        if (existingChannels.length > 0) {
+          // Channel exists, just set it as active (they've chatted before)
+          setActiveChannel(existingChannels[0]);
+          return;
+        }
+
+        // Channel doesn't exist - this is a new conversation
         const { data: profile } = await supabase
           .from("profiles")
           .select("full_name, avatar_url")
@@ -105,13 +121,10 @@ export const ChatPage = () => {
           }),
         });
 
-        // Create deterministic channel ID
-        const channelId = `dm_${[myId, dmUserId].sort().join("_")}`.substring(0, 64);
-
         const channel = chatClient.channel("messaging", channelId, {
           members: [myId, dmUserId],
-          //name: profile?.full_name || "Direct Message",
-        });
+          name: profile?.full_name || "Direct Message",
+        } as any);
 
         await channel.watch();
         setActiveChannel(channel);

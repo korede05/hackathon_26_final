@@ -215,57 +215,55 @@ export const BrowsePage: React.FC = () => {
   const currentHome = listings[currentIndex];
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden flex flex-col">
       {/* Fixed Header */}
-      <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
+      <div className="bg-white py-3 shadow-sm border-b border-gray-100 shrink-0">
         <div className="flex items-center justify-center">
           <div className="bg-gradient-to-br from-blue-600 to-purple-500 rounded-full p-2">
-            <Home className="w-6 h-6 text-white" />
+            <Home className="w-5 h-5 text-white" />
           </div>
         </div>
       </div>
 
       {/* Showing Dislikes Badge */}
       {showingDislikes && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
           Reviewing Passed Homes
         </div>
       )}
 
-      {/* Main Content Area - Centered Container */}
-      <div className="flex-1 flex items-center justify-center px-4 py-6 overflow-hidden">
-        {/* Card + Buttons Container - Single Unit */}
-        <div className="w-full max-w-md flex flex-col items-center">
-          {/* Property Card */}
+      {/* Main Content - Optimized for mobile */}
+      <div className="flex-1 flex items-center justify-center px-3 py-2 overflow-hidden">
+        <div className="w-full max-w-sm">
+          {/* Property Card - Compact */}
           <div 
-            className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full transition-all duration-300 flex flex-col ${
+            className={`bg-white rounded-2xl overflow-hidden shadow-xl w-full mb-4 transition-all duration-300 ${
               swipeDirection === 'left' 
                 ? 'opacity-0 -translate-x-full' 
                 : swipeDirection === 'right'
                 ? 'opacity-0 translate-x-full'
                 : 'opacity-100 translate-x-0'
             }`}
-            style={{ maxHeight: '70vh' }}
           >
             {/* Swipe indicator overlays */}
             {swipeDirection === 'left' && (
               <div className="absolute inset-0 bg-red-500/20 z-10 flex items-center justify-center">
-                <div className="bg-white rounded-full p-4 shadow-xl">
-                  <X className="w-16 h-16 text-red-500" strokeWidth={4} />
+                <div className="bg-white rounded-full p-3 shadow-xl">
+                  <X className="w-12 h-12 text-red-500" strokeWidth={4} />
                 </div>
               </div>
             )}
 
             {swipeDirection === 'right' && (
               <div className="absolute inset-0 bg-green-500/20 z-10 flex items-center justify-center">
-                <div className="bg-white rounded-full p-4 shadow-xl">
-                  <Heart className="w-16 h-16 text-green-500 fill-green-500" strokeWidth={4} />
+                <div className="bg-white rounded-full p-3 shadow-xl">
+                  <Heart className="w-12 h-12 text-green-500 fill-green-500" strokeWidth={4} />
                 </div>
               </div>
             )}
 
-            {/* Image */}
-            <div className="relative flex-shrink-0" style={{ height: '40vh', maxHeight: '350px' }}>
+            {/* Image - Smaller */}
+            <div className="relative h-56">
               <img 
                 src={currentHome.cover_photo_url || "https://images.unsplash.com/photo-1518780664697-55e3ad937233"} 
                 alt={currentHome.title}
@@ -273,20 +271,20 @@ export const BrowsePage: React.FC = () => {
               />
             </div>
 
-            {/* Info Section */}
-            <div className="p-5 flex-1 overflow-y-auto">
+            {/* Info Section - Compact */}
+            <div className="p-4">
               {/* Price */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+              <h1 className="text-2xl font-bold text-gray-900 mb-1">
                 ${currentHome.price_max.toLocaleString()}
               </h1>
 
               {/* Address */}
-              <p className="text-sm text-gray-600 mb-3 line-clamp-1">
+              <p className="text-xs text-gray-600 mb-2 line-clamp-1">
                 {currentHome.title}
               </p>
 
               {/* Bed/Bath/Sqft Stats */}
-              <div className="flex items-center gap-5 text-base font-semibold text-gray-800 mb-3">
+              <div className="flex items-center gap-4 text-sm font-semibold text-gray-800 mb-2">
                 <div className="flex items-center gap-1">
                   <span>{currentHome.bedrooms || 0}</span>
                   <span className="text-xs text-gray-500 font-normal">beds</span>
@@ -302,44 +300,42 @@ export const BrowsePage: React.FC = () => {
               </div>
 
               {/* Description */}
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              <p className="text-xs text-gray-600 line-clamp-2 mb-2">
                 {currentHome.description}
               </p>
 
               {/* Category Tag */}
               {currentHome.housing_category && (
-                <div className="flex gap-2">
-                  <span className="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">
-                    {currentHome.housing_category}
-                  </span>
-                </div>
+                <span className="inline-flex px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">
+                  {currentHome.housing_category}
+                </span>
               )}
             </div>
           </div>
 
-          {/* Action Buttons - Part of the Same Container */}
-          <div className="flex items-center justify-center gap-6 mt-6 w-full">
+          {/* Action Buttons - Smaller */}
+          <div className="flex items-center justify-center gap-5">
             <button 
               onClick={() => handleAction("dislike")}
               disabled={swipeDirection !== null || showingDislikes}
-              className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+              className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
             >
-              <X className="w-8 h-8 text-red-500" strokeWidth={3} />
+              <X className="w-7 h-7 text-red-500" strokeWidth={3} />
             </button>
             
             <button 
               onClick={() => navigate(`/listing/${currentHome.id}`)}
-              className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
+              className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              <Info className="w-6 h-6 text-gray-400" />
+              <Info className="w-5 h-5 text-gray-400" />
             </button>
 
             <button 
               onClick={() => handleAction("like")}
               disabled={swipeDirection !== null}
-              className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+              className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
             >
-              <Heart className="w-8 h-8 fill-green-500 text-green-500" strokeWidth={3} />
+              <Heart className="w-7 h-7 fill-green-500 text-green-500" strokeWidth={3} />
             </button>
           </div>
         </div>
