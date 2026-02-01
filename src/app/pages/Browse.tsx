@@ -232,113 +232,116 @@ export const BrowsePage: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content Area - Flexbox */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
-        {/* Property Card */}
-        <div 
-          className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-md transition-all duration-300 flex flex-col ${
-            swipeDirection === 'left' 
-              ? 'opacity-0 -translate-x-full' 
-              : swipeDirection === 'right'
-              ? 'opacity-0 translate-x-full'
-              : 'opacity-100 translate-x-0'
-          }`}
-          style={{ maxHeight: '75vh' }}
-        >
-          {/* Swipe indicator overlays */}
-          {swipeDirection === 'left' && (
-            <div className="absolute inset-0 bg-red-500/20 z-10 flex items-center justify-center">
-              <div className="bg-white rounded-full p-4 shadow-xl">
-                <X className="w-16 h-16 text-red-500" strokeWidth={4} />
-              </div>
-            </div>
-          )}
-
-          {swipeDirection === 'right' && (
-            <div className="absolute inset-0 bg-green-500/20 z-10 flex items-center justify-center">
-              <div className="bg-white rounded-full p-4 shadow-xl">
-                <Heart className="w-16 h-16 text-green-500 fill-green-500" strokeWidth={4} />
-              </div>
-            </div>
-          )}
-
-          {/* Image - Takes up 60% of card */}
-          <div className="relative flex-shrink-0" style={{ height: '45vh', maxHeight: '400px' }}>
-            <img 
-              src={currentHome.cover_photo_url || "https://images.unsplash.com/photo-1518780664697-55e3ad937233"} 
-              alt={currentHome.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Info Section - Takes remaining space */}
-          <div className="p-5 flex-1 overflow-y-auto">
-            {/* Price */}
-            <h1 className="text-3xl font-bold text-gray-900 mb-1">
-              ${currentHome.price_max.toLocaleString()}
-            </h1>
-
-            {/* Address */}
-            <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-              {currentHome.title}
-            </p>
-
-            {/* Bed/Bath/Sqft Stats */}
-            <div className="flex items-center gap-5 text-base font-semibold text-gray-800 mb-3">
-              <div className="flex items-center gap-1">
-                <span>{currentHome.bedrooms || 0}</span>
-                <span className="text-xs text-gray-500 font-normal">beds</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span>{currentHome.bathrooms || 0}</span>
-                <span className="text-xs text-gray-500 font-normal">baths</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span>{currentHome.sqft?.toLocaleString() || '--'}</span>
-                <span className="text-xs text-gray-500 font-normal">sqft</span>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-              {currentHome.description}
-            </p>
-
-            {/* Category Tag */}
-            {currentHome.housing_category && (
-              <div className="flex gap-2">
-                <span className="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">
-                  {currentHome.housing_category}
-                </span>
+      {/* Main Content Area - Centered Container */}
+      <div className="flex-1 flex items-center justify-center px-4 py-6 overflow-hidden">
+        {/* Card + Buttons Container - Single Unit */}
+        <div className="w-full max-w-md flex flex-col items-center">
+          {/* Property Card */}
+          <div 
+            className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full transition-all duration-300 flex flex-col ${
+              swipeDirection === 'left' 
+                ? 'opacity-0 -translate-x-full' 
+                : swipeDirection === 'right'
+                ? 'opacity-0 translate-x-full'
+                : 'opacity-100 translate-x-0'
+            }`}
+            style={{ maxHeight: '70vh' }}
+          >
+            {/* Swipe indicator overlays */}
+            {swipeDirection === 'left' && (
+              <div className="absolute inset-0 bg-red-500/20 z-10 flex items-center justify-center">
+                <div className="bg-white rounded-full p-4 shadow-xl">
+                  <X className="w-16 h-16 text-red-500" strokeWidth={4} />
+                </div>
               </div>
             )}
+
+            {swipeDirection === 'right' && (
+              <div className="absolute inset-0 bg-green-500/20 z-10 flex items-center justify-center">
+                <div className="bg-white rounded-full p-4 shadow-xl">
+                  <Heart className="w-16 h-16 text-green-500 fill-green-500" strokeWidth={4} />
+                </div>
+              </div>
+            )}
+
+            {/* Image */}
+            <div className="relative flex-shrink-0" style={{ height: '40vh', maxHeight: '350px' }}>
+              <img 
+                src={currentHome.cover_photo_url || "https://images.unsplash.com/photo-1518780664697-55e3ad937233"} 
+                alt={currentHome.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Info Section */}
+            <div className="p-5 flex-1 overflow-y-auto">
+              {/* Price */}
+              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                ${currentHome.price_max.toLocaleString()}
+              </h1>
+
+              {/* Address */}
+              <p className="text-sm text-gray-600 mb-3 line-clamp-1">
+                {currentHome.title}
+              </p>
+
+              {/* Bed/Bath/Sqft Stats */}
+              <div className="flex items-center gap-5 text-base font-semibold text-gray-800 mb-3">
+                <div className="flex items-center gap-1">
+                  <span>{currentHome.bedrooms || 0}</span>
+                  <span className="text-xs text-gray-500 font-normal">beds</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span>{currentHome.bathrooms || 0}</span>
+                  <span className="text-xs text-gray-500 font-normal">baths</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span>{currentHome.sqft?.toLocaleString() || '--'}</span>
+                  <span className="text-xs text-gray-500 font-normal">sqft</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                {currentHome.description}
+              </p>
+
+              {/* Category Tag */}
+              {currentHome.housing_category && (
+                <div className="flex gap-2">
+                  <span className="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold border border-blue-100">
+                    {currentHome.housing_category}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-6 mt-6 shrink-0">
-          <button 
-            onClick={() => handleAction("dislike")}
-            disabled={swipeDirection !== null || showingDislikes}
-            className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
-          >
-            <X className="w-8 h-8 text-red-500" strokeWidth={3} />
-          </button>
-          
-          <button 
-            onClick={() => navigate(`/listing/${currentHome.id}`)}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
-          >
-            <Info className="w-6 h-6 text-gray-400" />
-          </button>
+          {/* Action Buttons - Part of the Same Container */}
+          <div className="flex items-center justify-center gap-6 mt-6 w-full">
+            <button 
+              onClick={() => handleAction("dislike")}
+              disabled={swipeDirection !== null || showingDislikes}
+              className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+            >
+              <X className="w-8 h-8 text-red-500" strokeWidth={3} />
+            </button>
+            
+            <button 
+              onClick={() => navigate(`/listing/${currentHome.id}`)}
+              className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
+            >
+              <Info className="w-6 h-6 text-gray-400" />
+            </button>
 
-          <button 
-            onClick={() => handleAction("like")}
-            disabled={swipeDirection !== null}
-            className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
-          >
-            <Heart className="w-8 h-8 fill-green-500 text-green-500" strokeWidth={3} />
-          </button>
+            <button 
+              onClick={() => handleAction("like")}
+              disabled={swipeDirection !== null}
+              className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all disabled:opacity-50"
+            >
+              <Heart className="w-8 h-8 fill-green-500 text-green-500" strokeWidth={3} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
