@@ -185,7 +185,7 @@ export const BrowsePage: React.FC = () => {
 
   if (currentIndex >= listings.length) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center p-6">
+      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center p-6 overflow-hidden">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 text-center">
           <div className="bg-gray-100 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
             <RotateCcw className="w-10 h-10 text-gray-600" />
@@ -215,9 +215,9 @@ export const BrowsePage: React.FC = () => {
   const currentHome = listings[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-500 pb-24">
+    <div className="fixed inset-0 bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden">
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 bg-white z-10 py-4 shadow-sm border-b border-gray-100">
+      <div className="absolute top-0 left-0 right-0 bg-white z-10 py-4 shadow-sm border-b border-gray-100">
         <div className="flex items-center justify-center">
           <div className="bg-gradient-to-br from-blue-600 to-purple-500 rounded-full p-2">
             <Home className="w-6 h-6 text-white" />
@@ -227,22 +227,23 @@ export const BrowsePage: React.FC = () => {
 
       {/* Showing Dislikes Badge */}
       {showingDislikes && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-20 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
           Reviewing Passed Homes
         </div>
       )}
 
-      {/* Content */}
-      <div className="w-full max-w-sm mx-auto px-4 pt-20 pb-8 flex flex-col items-center justify-center min-h-screen">
-        {/* Property Card - Smaller for mobile */}
+      {/* Content - Flexbox fills screen */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pt-16 pb-28">
+        {/* Property Card - Responsive sizing */}
         <div 
-          className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full mb-6 transition-all duration-300 ${
+          className={`bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-sm transition-all duration-300 ${
             swipeDirection === 'left' 
               ? 'opacity-0 -translate-x-full' 
               : swipeDirection === 'right'
               ? 'opacity-0 translate-x-full'
               : 'opacity-100 translate-x-0'
           }`}
+          style={{ maxHeight: 'calc(100vh - 240px)' }}
         >
           {/* Swipe indicator overlays */}
           {swipeDirection === 'left' && (
@@ -261,8 +262,8 @@ export const BrowsePage: React.FC = () => {
             </div>
           )}
 
-          {/* Image */}
-          <div className="relative h-64">
+          {/* Image - Responsive height */}
+          <div className="relative" style={{ height: 'min(50vh, 400px)' }}>
             <img 
               src={currentHome.cover_photo_url || "https://images.unsplash.com/photo-1518780664697-55e3ad937233"} 
               alt={currentHome.title}
@@ -270,15 +271,15 @@ export const BrowsePage: React.FC = () => {
             />
           </div>
 
-          {/* Info Section */}
-          <div className="p-5">
+          {/* Info Section - Scrollable if needed */}
+          <div className="p-5 overflow-y-auto" style={{ maxHeight: 'calc(50vh - 120px)' }}>
             {/* Price */}
             <h1 className="text-3xl font-bold text-gray-900 mb-1">
               ${currentHome.price_max.toLocaleString()}
             </h1>
 
             {/* Address */}
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-gray-600 mb-3 line-clamp-1">
               {currentHome.title}
             </p>
 
@@ -314,8 +315,8 @@ export const BrowsePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-6">
+        {/* Action Buttons - Fixed at bottom */}
+        <div className="flex items-center justify-center gap-6 mt-6">
           {/* Pass button */}
           <button 
             onClick={() => handleAction("dislike")}
