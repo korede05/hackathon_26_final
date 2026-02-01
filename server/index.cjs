@@ -70,9 +70,8 @@ app.post("/ensure-user", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001; 
 
-app.listen(PORT, () => {
-  console.log(`✅ Stream token server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Stream token server running on port ${PORT}`);
 });
-app.use(cors({ origin: ["https://hackathon26final-production.up.railway.app/", "http://localhost:5173"] }));
