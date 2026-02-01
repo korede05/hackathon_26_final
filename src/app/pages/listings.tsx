@@ -90,18 +90,18 @@ export const ListingsPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="h-screen bg-linear-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="font-bold text-white text-xl">
-            Loading your saved homes...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen bg-linear-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
+  //         <p className="font-bold text-white text-xl">
+  //           Loading your saved homes...
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -169,11 +169,11 @@ export const ListingsPage: React.FC = () => {
                           {/* Category badge - below title */}
                           {listing.housing_category && (
                             <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 mb-3">
-                              {/* {listing.housing_category === "student" ? "Student" :
+                             { listing.housing_category === "student" ? "Student" :
                                listing.housing_category === "affordable" ? "Affordable" :
                                listing.housing_category === "accessible" ? "Accessible" :
                                listing.housing_category === "shelter" ? "Shelter" :
-                               "Housing"} */}
+                               "Housing"}
                               {/* {resource.category === "volunteering" ? "Volunteering" */}
 
                             </span>

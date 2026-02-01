@@ -46,7 +46,7 @@ export const ChatPage = () => {
 
       try {
         // Fetch token from your server on port 3001
-        const resp = await fetch("http://localhost:3001/stream-token", {
+        const resp = await fetch("https://hackathon26final-production.up.railway.app/stream-token", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -96,7 +96,7 @@ export const ChatPage = () => {
           .single();
 
         // Ensure the DM target user exists in Stream Chat before creating channel
-        await fetch("http://localhost:3001/ensure-user", {
+        await fetch("https://hackathon26final-production.up.railway.app/ensure-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
