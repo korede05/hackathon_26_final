@@ -75,4 +75,4 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`✅ Stream token server running on http://localhost:${PORT}`);
 });
-app.use(cors({ origin: ["https://brilliant-marshmallow-e77688.netlify.app/", "http://localhost:5173"] }));
+app.use(cors({ origin: ["https://hackathon26final-production.up.railway.app/", "http://localhost:5173"] }));

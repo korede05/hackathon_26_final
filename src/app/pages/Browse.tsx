@@ -20,7 +20,7 @@ interface Listing {
 export const BrowsePage: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ export const BrowsePage: React.FC = () => {
   }, []);
 
   const fetchListings = async () => {
-    setLoading(true);
+    //setLoading(true);
     const { data, error } = await supabase
       .from("listings")
       .select("*")
@@ -40,7 +40,7 @@ export const BrowsePage: React.FC = () => {
     } else {
       setListings(data || []);
     }
-    setLoading(false);
+    //setLoading(false);
   };
 
   const handleAction = async (action: "like" | "dislike") => {
@@ -81,16 +81,16 @@ export const BrowsePage: React.FC = () => {
     setSwipeDirection(null);
   };
 
-  if (loading) {
-    return (
-      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="font-bold text-white text-xl">Finding homes...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
+  //         <p className="font-bold text-white text-xl">Finding homes...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (currentIndex >= listings.length) {
     return (
