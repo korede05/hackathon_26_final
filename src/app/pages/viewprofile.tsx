@@ -34,6 +34,7 @@ export const ViewProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [potentialMatches, setPotentialMatches] = useState<MatchProfile[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -57,18 +58,20 @@ export const ViewProfilePage: React.FC = () => {
     };
 
     if (id) fetchProfile();
+
+    
   }, [id, navigate]);
 
-  if (loading) {
-    return (
-      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="font-bold text-white text-xl">Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
+  //         <p className="font-bold text-white text-xl">Loading profile...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (!profile) return null;
 
@@ -178,7 +181,9 @@ export const ViewProfilePage: React.FC = () => {
         </div>
 
         {/* Message Button */}
-        <button className="w-full bg-black text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-800 transition-all shadow-md">
+        <button 
+          onClick={() => navigate(`/chat?dm=${person.id}`)}
+          className="w-full bg-black text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-800 transition-all shadow-md">
           <Mail size={20} />
           Message {profile.full_name.split(' ')[0]}
         </button>
