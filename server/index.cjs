@@ -1,11 +1,12 @@
+const path = require("path"); 
+
 const express = require("express");
 const cors = require("cors");
 const { StreamChat } = require("stream-chat");
 const dotenv = require("dotenv");
 
-// Load server env file
+// Now this line will work correctly
 dotenv.config({ path: path.join(__dirname, ".env") });
-
 const app = express();
 
 // 1. DYNAMIC CORS CONFIGURATION
