@@ -1,5 +1,6 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
+import "./chat-overrides.css";
 import {
   Chat,
   Channel,
@@ -159,74 +160,74 @@ export const ChatPage = () => {
   }
 
   return (
-    <div className="h-screen bg-white overflow-hidden flex flex-col pb-20">
-      {/* Fixed Header */}
-      <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
-        <div className="max-w-6xl mx-auto px-6 flex items-center gap-4">
-          {activeChannel && !showChannelList && (
-            <button
-              onClick={() => setShowChannelList(true)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition"
-            >
-              <ChevronLeft size={24} className="text-gray-900" />
-            </button>
-          )}
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-            <p className="text-sm text-gray-500 hidden md:block">Chat with potential roommates</p>
-          </div>
+  <div className="h-screen bg-white overflow-hidden flex flex-col">
+    {/* Fixed Header */}
+    <div className="bg-white z-10 py-4 shadow-sm border-b border-gray-100 shrink-0">
+      <div className="max-w-6xl mx-auto px-6 flex items-center gap-4">
+        {activeChannel && !showChannelList && (
+          <button
+            onClick={() => setShowChannelList(true)}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition"
+          >
+            <ChevronLeft size={24} className="text-gray-900" />
+          </button>
+        )}
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
+          <p className="text-sm text-gray-500 hidden md:block">Chat with potential roommates</p>
         </div>
       </div>
-
-      {/* Chat Container */}
-      <div className="flex-1 max-w-6xl w-full mx-auto overflow-hidden">
-        <Chat client={chatClient} theme="messaging light">
-          <div className="flex h-full">
-            {/* Sidebar */}
-            <div
-              className={`${
-                showChannelList ? 'block' : 'hidden'
-              } md:block w-full md:w-80 border-r border-gray-100 h-full overflow-y-auto bg-white`}
-            >
-              <ChannelList
-                filters={filters}
-                sort={sort}
-                customActiveChannel={activeChannel?.id}
-                Preview={CustomChannelPreview}
-              />
-            </div>
-
-            {/* Main Chat Area */}
-            <div
-              className={`${
-                !showChannelList ? 'block' : 'hidden'
-              } md:block flex-1 bg-white h-full flex flex-col`}
-            >
-              {activeChannel ? (
-                <Channel channel={activeChannel}>
-                  <Window>
-                    <ChannelHeader />
-                    <div className="flex-1 overflow-y-auto">
-                      <MessageList />
-                    </div>
-                    <div className="shrink-0">
-                      <MessageInput />
-                    </div>
-                  </Window>
-                  <Thread />
-                </Channel>
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
-                  <div className="text-center">
-                    <p className="text-lg font-medium mb-2">No conversation selected</p>
-                    <p className="text-sm">Choose a roommate to start chatting</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </Chat>
-      </div>
     </div>
-  );
+
+    {/* Chat Container */}
+    <div className="flex-1 max-w-6xl w-full mx-auto overflow-hidden pb-20">
+      <Chat client={chatClient} theme="messaging light">
+        <div className="flex h-full">
+          {/* Sidebar */}
+          <div
+            className={`${
+              showChannelList ? 'block' : 'hidden'
+            } md:block w-full md:w-80 border-r border-gray-100 h-full overflow-y-auto bg-white`}
+          >
+            <ChannelList
+              filters={filters}
+              sort={sort}
+              customActiveChannel={activeChannel?.id}
+              Preview={CustomChannelPreview}
+            />
+          </div>
+
+          {/* Main Chat Area */}
+          <div
+            className={`${
+              !showChannelList ? 'block' : 'hidden'
+            } md:block flex-1 bg-white h-full flex flex-col`}
+          >
+            {activeChannel ? (
+              <Channel channel={activeChannel}>
+                <Window>
+                  <ChannelHeader />
+                  <div className="flex-1 overflow-y-auto pb-2">
+                    <MessageList />
+                  </div>
+                  <div className="shrink-0 pb-2">
+                    <MessageInput />
+                  </div>
+                </Window>
+                <Thread />
+              </Channel>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="text-center">
+                  <p className="text-lg font-medium mb-2">No conversation selected</p>
+                  <p className="text-sm">Choose a roommate to start chatting</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Chat>
+    </div>
+  </div>
+);
 };

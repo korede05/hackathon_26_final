@@ -1,0 +1,5 @@
+.str-chat__textarea textarea {
+  min-height: 80px !important;
+  max-height: 150px !important;
+  padding: 12px !important;
+}
