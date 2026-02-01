@@ -1,6 +1,6 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useMemo, useState } from "react";
-import "./chat-overrides.css";
+import ".../../../styles/chat-overrides.css";
 import {
   Chat,
   Channel,
