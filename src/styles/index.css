@@ -1,0 +1,26 @@
+@import './tailwind.css';
+@import './theme.css';
+
+/* Stream Chat Layout Overrides */
+.str-chat {
+  height: 100%;
+}
+
+.str-chat__channel {
+  height: 100%;
+}
+
+.str-chat__main-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.str-chat__list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.str-chat__message-input {
+  flex-shrink: 0;
+}
