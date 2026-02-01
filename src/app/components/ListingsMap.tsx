@@ -140,7 +140,7 @@ export const ListingsMap: React.FC = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full pt-8">
       <div className="flex items-center justify-between mb-4">
         {/* <h2 className="text-lg font-bold text-gray-900">Explore Listings</h2> */}
 
