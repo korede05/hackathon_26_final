@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../../supabaseClient";
-import { Users, MessageCircle, X } from "lucide-react";
+import { Users, MessageCircle, X, Sparkles } from "lucide-react";
+import { calculateDeepMatch } from "../components/getAIscore";
 
 export const MatchesPage = () => {
   const navigate = useNavigate();
@@ -11,8 +12,33 @@ export const MatchesPage = () => {
 
   useEffect(() => {
     const fetchMatches = async () => {
-      const { data } = await supabase.from("profiles").select("*").limit(10);
-      setProfiles(data || []);
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get current user's profile
+      const { data: myProfile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      // Get other profiles
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .neq("id", user.id)
+        .limit(10);
+
+      // Calculate AI compatibility scores for each profile
+      const profilesWithScores = (data || []).map(profile => ({
+        ...profile,
+        compatibility_score: calculateDeepMatch(myProfile, profile)
+      }));
+
+      // Sort by compatibility score (highest first)
+      profilesWithScores.sort((a, b) => b.compatibility_score - a.compatibility_score);
+      setProfiles(profilesWithScores);
     };
     fetchMatches();
   }, []);
@@ -69,6 +95,14 @@ export const MatchesPage = () => {
                   <h3 className="font-bold text-gray-900">{person.full_name}</h3>
                   <p className="text-sm text-gray-500 line-clamp-1">{person.bio || "No bio yet"}</p>
                 </div>
+              </div>
+
+              {/* AI Compatibility Score */}
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full">
+                <Sparkles size={16} className="text-purple-600" />
+                <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                  {person.compatibility_score}% Match
+                </span>
               </div>
               
               {!isGroupMode ? (

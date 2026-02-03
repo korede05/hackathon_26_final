@@ -3,12 +3,12 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import "../../styles/chat-overrides.css";
 import {
   Chat, Channel, ChannelList, MessageInput, MessageList, Window,
-  ChannelHeader, Thread, ChannelPreviewMessenger, ChannelPreviewUIComponentProps,
+  ChannelPreviewMessenger, ChannelPreviewUIComponentProps,
 } from "stream-chat-react";
 import { StreamChat } from "stream-chat";
 import "stream-chat-react/dist/css/v2/index.css";
 import { supabase } from "../../../supabaseClient";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Pencil, X, Check } from "lucide-react";
 
 const streamKey = import.meta.env.VITE_STREAM_API_KEY as string;
 const chatClient = StreamChat.getInstance(streamKey);
@@ -17,6 +17,8 @@ export const ChatPage = () => {
   const [ready, setReady] = useState(false);
   const [activeChannel, setActiveChannel] = useState<any>(null);
   const [showChannelList, setShowChannelList] = useState(true);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newGroupName, setNewGroupName] = useState("");
   const [params] = useSearchParams();
   const location = useLocation();
   const dmUserId = params.get("dm");
@@ -52,6 +54,30 @@ export const ChatPage = () => {
       console.error("Group creation failed:", err);
     }
   }, []);
+
+  // --- RENAME GROUP CHAT ---
+  const renameGroupChat = useCallback(async (newName: string) => {
+    if (!activeChannel || !newName.trim()) return;
+    try {
+      await activeChannel.update({ name: newName.trim() });
+      setIsEditingName(false);
+      setNewGroupName("");
+    } catch (err) {
+      console.error("Failed to rename group:", err);
+    }
+  }, [activeChannel]);
+
+  const startEditingName = () => {
+    if (activeChannel) {
+      setNewGroupName(activeChannel.data?.name || "");
+      setIsEditingName(true);
+    }
+  };
+
+  const cancelEditingName = () => {
+    setIsEditingName(false);
+    setNewGroupName("");
+  };
 
   useEffect(() => {
     const connect = async () => {
@@ -122,7 +148,46 @@ export const ChatPage = () => {
           <div className={`flex-1 ${!showChannelList ? 'block' : 'hidden md:block'}`}>
             {activeChannel ? (
               <Channel channel={activeChannel}>
-                <Window><ChannelHeader /><MessageList /><MessageInput /></Window>
+                <Window>
+                  {/* Custom Header with Rename for Groups */}
+                  <div className="str-chat__header-livestream p-4 border-b flex items-center justify-between">
+                    {isEditingName ? (
+                      <div className="flex items-center gap-2 flex-1">
+                        <input
+                          type="text"
+                          value={newGroupName}
+                          onChange={(e) => setNewGroupName(e.target.value)}
+                          className="flex-1 px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Enter group name"
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") renameGroupChat(newGroupName);
+                            if (e.key === "Escape") cancelEditingName();
+                          }}
+                        />
+                        <button onClick={() => renameGroupChat(newGroupName)} className="p-2 text-green-600 hover:bg-green-50 rounded-lg">
+                          <Check size={20} />
+                        </button>
+                        <button onClick={cancelEditingName} className="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                          <X size={20} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="font-semibold text-lg">
+                          {activeChannel.data?.name || "Chat"}
+                        </div>
+                        {activeChannel.id?.startsWith("group_") && (
+                          <button onClick={startEditingName} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Rename group">
+                            <Pencil size={18} />
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                  <MessageList />
+                  <MessageInput />
+                </Window>
               </Channel>
             ) : <div className="h-full flex items-center justify-center text-gray-400">Select a chat</div>}
           </div>

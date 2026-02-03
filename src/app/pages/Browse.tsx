@@ -174,7 +174,7 @@ export const BrowsePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center">
+      <div className="h-screen bg-linear-to-br from-blue-600 to-purple-500 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto mb-4"></div>
           <p className="font-bold text-white text-xl">Finding homes...</p>
@@ -185,7 +185,7 @@ export const BrowsePage: React.FC = () => {
 
   if (currentIndex >= listings.length) {
     return (
-      <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center p-6 overflow-hidden">
+      <div className="h-screen bg-linear-to-br from-blue-600 to-purple-500 flex items-center justify-center p-6 overflow-hidden">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 text-center">
           <div className="bg-gray-100 p-6 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
             <RotateCcw className="w-10 h-10 text-gray-600" />
@@ -215,11 +215,11 @@ export const BrowsePage: React.FC = () => {
   const currentHome = listings[currentIndex];
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-600 to-purple-500 overflow-hidden flex flex-col">
+    <div className="h-screen bg-linear-to-br from-blue-600 to-purple-500 overflow-hidden flex flex-col">
       {/* Fixed Header */}
       <div className="bg-white py-3 shadow-sm border-b border-gray-100 shrink-0">
         <div className="flex items-center justify-center">
-          <div className="bg-gradient-to-br from-blue-600 to-purple-500 rounded-full p-2">
+          <div className="bg-linear-to-br from-blue-600 to-purple-500 rounded-full p-2">
             <Home className="w-5 h-5 text-white" />
           </div>
         </div>
