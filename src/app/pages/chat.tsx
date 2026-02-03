@@ -8,7 +8,7 @@ import {
 import { StreamChat } from "stream-chat";
 import "stream-chat-react/dist/css/v2/index.css";
 import { supabase } from "../../../supabaseClient";
-import { ChevronLeft, Pencil, X, Check } from "lucide-react";
+import { ChevronLeft, Pencil, X, Check, UserPlus } from "lucide-react";
 
 const streamKey = import.meta.env.VITE_STREAM_API_KEY as string;
 const chatClient = StreamChat.getInstance(streamKey);
@@ -19,6 +19,9 @@ export const ChatPage = () => {
   const [showChannelList, setShowChannelList] = useState(true);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
+  const [showAddMembers, setShowAddMembers] = useState(false);
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  const [selectedNewMembers, setSelectedNewMembers] = useState<string[]>([]);
   const [params] = useSearchParams();
   const location = useLocation();
   const dmUserId = params.get("dm");
@@ -77,6 +80,48 @@ export const ChatPage = () => {
   const cancelEditingName = () => {
     setIsEditingName(false);
     setNewGroupName("");
+  };
+
+  // --- ADD MEMBERS TO GROUP ---
+  const openAddMembers = async () => {
+    if (!activeChannel) return;
+    // Get current members
+    const currentMemberIds = Object.keys(activeChannel.state.members || {});
+    // Fetch all profiles except current members
+    const { data } = await supabase
+      .from("profiles")
+      .select("*");
+    const available = (data || []).filter(u => !currentMemberIds.includes(u.id));
+    setAvailableUsers(available);
+    setSelectedNewMembers([]);
+    setShowAddMembers(true);
+  };
+
+  const toggleNewMember = (userId: string) => {
+    setSelectedNewMembers(prev =>
+      prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]
+    );
+  };
+
+  const addMembersToGroup = async () => {
+    if (!activeChannel || selectedNewMembers.length === 0) return;
+    try {
+      // Ensure users exist in Stream
+      await Promise.all(selectedNewMembers.map(async (id) => {
+        const user = availableUsers.find(u => u.id === id);
+        await fetch("/.netlify/functions/ensure-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: id, name: user?.full_name || "User", image: user?.avatar_url }),
+        });
+      }));
+      // Add members to channel
+      await activeChannel.addMembers(selectedNewMembers);
+      setShowAddMembers(false);
+      setSelectedNewMembers([]);
+    } catch (err) {
+      console.error("Failed to add members:", err);
+    }
   };
 
   useEffect(() => {
@@ -178,9 +223,14 @@ export const ChatPage = () => {
                           {activeChannel.data?.name || "Chat"}
                         </div>
                         {activeChannel.id?.startsWith("group_") && (
-                          <button onClick={startEditingName} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Rename group">
-                            <Pencil size={18} />
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <button onClick={openAddMembers} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Add members">
+                              <UserPlus size={18} />
+                            </button>
+                            <button onClick={startEditingName} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Rename group">
+                              <Pencil size={18} />
+                            </button>
+                          </div>
                         )}
                       </>
                     )}
@@ -193,6 +243,58 @@ export const ChatPage = () => {
           </div>
         </Chat>
       </div>
+
+      {/* Add Members Modal */}
+      {showAddMembers && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div className="p-4 border-b flex items-center justify-between">
+              <h2 className="text-lg font-bold">Add Members</h2>
+              <button onClick={() => setShowAddMembers(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              {availableUsers.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">No users available to add</p>
+              ) : (
+                <div className="space-y-2">
+                  {availableUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      onClick={() => toggleNewMember(user.id)}
+                      className={`p-3 rounded-xl cursor-pointer flex items-center gap-3 border-2 transition ${
+                        selectedNewMembers.includes(user.id) ? "border-blue-500 bg-blue-50" : "border-transparent hover:bg-gray-50"
+                      }`}
+                    >
+                      <img
+                        src={user.avatar_url || `https://ui-avatars.com/api/?name=${user.full_name}`}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <span className="font-medium">{user.full_name}</span>
+                      <div className={`ml-auto w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedNewMembers.includes(user.id) ? "bg-blue-600 border-blue-600" : "border-gray-300"
+                      }`}>
+                        {selectedNewMembers.includes(user.id) && <Check size={12} className="text-white" />}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {selectedNewMembers.length > 0 && (
+              <div className="p-4 border-t">
+                <button
+                  onClick={addMembersToGroup}
+                  className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition"
+                >
+                  Add {selectedNewMembers.length} Member{selectedNewMembers.length > 1 ? "s" : ""}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
