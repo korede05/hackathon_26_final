@@ -23,12 +23,11 @@ export const MatchesPage = () => {
         .eq("id", user.id)
         .single();
 
-      // Get other profiles
+      // Get all other profiles
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .neq("id", user.id)
-        .limit(10);
+        .neq("id", user.id);
 
       // Calculate AI compatibility scores for each profile
       const profilesWithScores = (data || []).map(profile => ({
